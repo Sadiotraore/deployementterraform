@@ -1,0 +1,46 @@
+name: Deploy Pipeline For Terraform final
+
+on:
+  pull_request:
+    types: [closed]  
+    branches:
+      - main 
+    paths: 
+      - 'terraform/**'
+  
+jobs:
+  terraform:
+    name: Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: 1.9.0
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: "eu-west-1"
+
+    - name: Initialize Terraform
+      run: | 
+        cd terraform
+        terraform init
+
+    - name: Terraform Plan
+      id: plan
+      run: |
+        cd terraform
+        terraform plan -out=tfplan
+    - name: Terraform Apply
+      if: github.event.pull_request.merged == true
+      run: |
+        cd terraform
+        terraform apply -auto-approve
