@@ -1,26 +1,73 @@
-resource "aws_instance" "website_1" {
-  ami           ="ami-05ed4a24277883fb9"  
-  instance_type = local.environment["dev"].instance_type
-  # subnet_id     = "data.aws_subnet.selected.id"
-  subnet_id = "subnet-0822dc412c44968f8"
+# Création du bucket S3
+resource "aws_s3_bucket" "website_bucket" {
+  bucket = "lecloudfacile-rockkoue-site" # Remplacez par un nom unique
+}
 
-  vpc_security_group_ids = [
-    aws_security_group.ssh_access.id,
-    aws_security_group.nginx_web.id
-  ]
+# # Politique du bucket pour permettre l'accès public en lecture
+resource "aws_s3_bucket_policy" "website_bucket_policy" {
+  depends_on = [ aws_s3_bucket_public_access_block.website ]
+  bucket = aws_s3_bucket.website_bucket.id
 
-  tags = merge(local.tags, {
-    Name = "MyInstanceAMI2"
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid       = "PublicReadGetObject"
+        Effect    = "Allow"
+        Principal = "*"
+        Action    = [
+          "s3:GetObject",
+          "s3:PutObject",
+          "s3:ListBucket"
+        ]
+        Resource  = ["${aws_s3_bucket.website_bucket.arn}/*", "${aws_s3_bucket.website_bucket.arn}"]
+        }
+    ]
   })
 }
 
-resource "aws_instance" "website_2" {
-  ami           ="ami-05ed4a24277883fb9"
-  instance_type = local.environment["dev"].instance_type 
-  # subnet_id     = "data.aws_subnet.selected.id"
-  subnet_id = "subnet-0822dc412c44968f8"
 
-  tags = merge(local.tags, {
-    Name = "MyInstanceAMI3"
-  })
+
+
+resource "aws_s3_bucket_website_configuration" "website" {
+  bucket = aws_s3_bucket.website_bucket.id
+
+  index_document {
+    suffix = "index.html"
+  }
+
+  error_document {
+    key = "error.html"
+  }
+}
+
+resource "aws_s3_bucket_ownership_controls" "website" {
+  bucket = aws_s3_bucket.website_bucket.id
+
+  rule {
+    object_ownership = "BucketOwnerPreferred"
+  }
+}
+
+
+
+resource "aws_s3_bucket_public_access_block" "website" {
+  bucket = aws_s3_bucket.website_bucket.id
+
+  block_public_acls       = false
+  block_public_policy     = false
+  ignore_public_acls      = false
+  restrict_public_buckets = false
+}
+
+resource "aws_s3_bucket_acl" "website" {
+  depends_on = [ aws_s3_bucket_ownership_controls.website ]
+  bucket = aws_s3_bucket.website_bucket.id
+  acl    = "public-read-write"
+}
+
+
+# Output pour afficher l'URL du site web
+output "website_url" {
+  value = aws_s3_bucket_website_configuration.website.website_endpoint
 }
