@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LeCloudFacile - Solutions Cloud Simples</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        .header {
+            background-color: #FF8C00;
+            padding: 20px;
+            color: white;
+        }
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+        }
+        .hero {
+            background: linear-gradient(rgba(255,140,0,0.8), rgba(255,140,0,0.8)), url('https://via.placeholder.com/1200x600');
+            background-size: cover;
+            color: white;
+            text-align: center;
+            padding: 100px 0;
+        }
+        .services {
+            display: flex;
+            justify-content: space-around;
+            padding: 50px 0;
+        }
+        .service {
+            text-align: center;
+            width: 30%;
+        }
+        .cta {
+            background-color: #FF8C00;
+            color: white;
+            text-align: center;
+            padding: 50px 0;
+        }
+        .button {
+            background-color: white;
+            color: #FF8C00;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <nav class="nav">
+            <div class="logo">CloudFacile</div>
+            <div class="nav-links">
+                <a href="#services">Services</a>
+                <a href="#contact">Contact</a>
+            </div>
+        </nav>
+    </header>
+    <section class="hero">
+        <h1>Solutions Cloud Simples et Efficaces</h1>
+        <p>Optimisez votre infrastructure et votre application avec LeCloudFacile</p>
+        <a href="#contact" class="button">Commencer</a>
+    </section>
+
+    <section id="services" class="services">
+        <div class="service">
+            <h2>Stockage Cloud</h2>
+            <p>Stockez et accédez à vos données en toute sécurité</p>
+        </div>
+        <div class="service">
+            <h2>Serveurs Virtuels</h2>
+            <p>Déployez vos applications rapidement et facilement</p>
+        </div>
+        <div class="service">
+            <h2>Sauvegardes</h2>
+            <p>Protégez vos données avec nos solutions de backup</p>
+        </div>
+    </section>
+
+    <section id="contact" class="cta">
+        <h2>Prêt à simplifier votre infrastructure ?</h2>
+        <a href="#" class="button">Contactez-nous</a>
+    </section>
+</body>
+</html>
